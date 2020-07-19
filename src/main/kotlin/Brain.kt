@@ -70,14 +70,14 @@ class Brain(dimensions:Array<Int>, ranges:Array<Int>) {
     fun pullNeuron(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
         if (dimensionalAddress.size != dimensions.size) {
             print("Invalid dimensional address")
-            return arrayOf()
+            return emptyArray()
         }
         val neuron = brain[getLinear(dimensionalAddress, dimensions)]
 
         if (neuron is Int) {
-            val newNeuron = generateNeuronProximityAverage(dimensionalAddress, searchGranularity)
-            brain[getLinear(dimensionalAddress, dimensions)] = newNeuron
-            return newNeuron //The neuron does not exist, construct it and send it through! TODO more options + user-made algorithms
+            val newNeuron = generateNeuronProximityAverage(dimensionalAddress, searchGranularity) //The neuron does not exist, construct it
+            brain[getLinear(dimensionalAddress, dimensions)] = newNeuron //put the new neuron back into the brain
+            return newNeuron //send it through!
         } else {
             return neuron as Array<Int> //The neuron exists, send it through!
         }
@@ -85,6 +85,7 @@ class Brain(dimensions:Array<Int>, ranges:Array<Int>) {
     } //C1: no neuron exists, create one from surrounding neurons \/ C2: neuron exists, return data
 
     fun generateNeuronProximityAverage(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
+        if (searchGranularity < 1) { return generateNeuronRandom() }
         val neuronTypes = Array<Int>(2){0}
         val amalgamNeuron = Array<Int>(ranges.size){0}
         val bubbleArray = Array<Int>(dimensions.size){(2*searchGranularity)+1} //bubble refers to the shape :) this defines the size and dimensions of the search bubble
@@ -149,13 +150,34 @@ class Brain(dimensions:Array<Int>, ranges:Array<Int>) {
                 if (tempSpacer){println()}
             }
         }
-    } //"displays" the brain (mostly for debug :)
+    } //"displays" the brain.
+
+    fun printBinary(){
+        for (u in 0 until numberOfNeurons) {
+            val tempNeuron = brain[u]
+            if (tempNeuron is Int) {print("$tempNeuron ")} else if (tempNeuron is Array<*>){
+                if (tempNeuron.size > 1) {println("no size greater than one allowed!!!")} else if (tempNeuron[0] as Int > 0) {print("#")} else {print(" ")}
+                print(" ")
+            }
+
+
+            val tempArray = getDimensional(u, dimensions)
+            var tempSpacer: Boolean
+            for (t in 0 until tempArray.size) {
+                tempSpacer = true
+                for (r in t until tempArray.size) {
+                    tempSpacer = tempSpacer and (tempArray[r]+1==dimensions[r])
+                }
+                if (tempSpacer){println()}
+            }
+        }
+    } //also "displays" the brain, but only when there is only one value range. 0 is empty and anything greater (ideally 1) is a #
 }
 
 fun main() {
-    val lmao = Brain(arrayOf(10,30), arrayOf(1))
+    val lmao = Brain(arrayOf(10,60), arrayOf(1))
     for (hj in 0 until lmao.numberOfNeurons) {
-        lmao.pullNeuron(lmao.getDimensional(hj, lmao.dimensions), 1)
+        lmao.pullNeuron(lmao.getDimensional(hj, lmao.dimensions), 0)
     }
-    lmao.print()
+    lmao.printBinary()
 }
