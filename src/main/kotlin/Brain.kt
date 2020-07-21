@@ -1,3 +1,4 @@
+package jtkeio.brain
 import kotlin.random.Random
 
 class Brain(dimensions:Array<Int>, ranges:Array<Int>) {
@@ -224,4 +225,4 @@ class Brain(dimensions:Array<Int>, ranges:Array<Int>) {
     } //the same as generateNeuronProximityAverageRandom without the randomness lol
 }
 
-fun main() {}
+fun main(){}
