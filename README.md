@@ -1,4 +1,4 @@
-This is my attempt at a neural net.
+This is my attempt at a neural net
 
 (and kotlin in general).
 
