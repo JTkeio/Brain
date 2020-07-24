@@ -4,7 +4,7 @@ import kotlin.random.Random
 
 
 fun main() {
-    println(geometryTest(arrayOf(25, 50), 3, 0.2, true))
+    println(geometryTest(arrayOf(100, 100), 3, 0.2, true))
 }
 
 
@@ -20,17 +20,24 @@ fun geometryTest(dimensions: Array<Int>, searchGranularity: Int, percentageInfor
         //Finally, Brain is capable of multiple outputs of any range (besides negative) but it doesn't make sense to do more than two here. That demo will come soon!
     //Have fun, and beware of text stretch factors :)
 
-    val geometryBrain = Brain(dimensions, arrayOf(1)) //here you can define what your dimensions are in y to x order to fit your screen, but don't change the arrayOf(1) :p
+    val geometryBrain = Brain(dimensions, arrayOf(1)) //don't change the arrayOf(1) :p it limits the outputs to 0 and 1, like we want
     val searchGranularity = searchGranularity //how wide one neuron will search for info. Bigger isn't always better! 0 is random
     val percentageInformation = percentageInformation //how much information you give geometryBrain to start with as a decimal percentage. It's not entirely accurate
 
     fun geometricEquation(searchAddress: Array<Int>): Boolean {
         //define the equation you want geometryBrain to replicate here, or choose one of these
 
-        return (searchAddress[0]-12).toFloat().pow(2) + (searchAddress[1]-25).toFloat().pow(2) > 30 //a circle
-        //return searchAddress[0] > 12 //horizontal line
+        //2D
+        //return (searchAddress[0]-12).toFloat().pow(2) + (searchAddress[1]-25).toFloat().pow(2) > 30 //a circle
+        return searchAddress[0] > 50 //horizontal line
         //return searchAddress[1] > 12 //vertical line
         //return searchAddress[0] + searchAddress[1] > 100 //slanted line
+        //return (searchAddress[0] > 20) and (searchAddress[0] < 80) and (searchAddress[1] > 20) and (searchAddress[1] < 80) //square
+
+
+        //3D
+        //return searchAddress[0] + searchAddress[1] + searchAddress[2] > 30 //diagonally slanted line
+        //return (searchAddress[0]>2) and (searchAddress[0]<8) and (searchAddress[1]>2) and (searchAddress[1]<8) and (searchAddress[2]>2) and (searchAddress[2]<8) //cube
     }
 
     for (i in 0 until (geometryBrain.numberOfNeurons*percentageInformation).toInt()) {
