@@ -9,6 +9,12 @@ fun main() {
 
 
 fun geometryTest(dimensions: Array<Int>, searchGranularity: Int, percentageInformation: Double, doPrint: Boolean): Double {
+    //the length of dimensions determines the number of dimensions, the length of each element determines the size of the dimensions
+    //searchGranularity is how wide one neuron will search for info. Bigger isn't always better! 0 is random
+    //percentageInformation is how much information you give geometryBrain to start with as a decimal percentage. It's not entirely accurate
+    //doPrint shows the information before and after the algorithm deals with it
+    //geometryTest() returns it's accuracy
+
 
     // NOTE from brainboy:
         //This test demonstrates the effectiveness of Brain's algorithms. I recommend generateNeuronProximityAverageAbsolute. It seems to work best here.
@@ -20,9 +26,8 @@ fun geometryTest(dimensions: Array<Int>, searchGranularity: Int, percentageInfor
         //Finally, Brain is capable of multiple outputs of any range (besides negative) but it doesn't make sense to do more than two here. That demo will come soon!
     //Have fun, and beware of text stretch factors :)
 
+
     val geometryBrain = Brain(dimensions, arrayOf(1)) //don't change the arrayOf(1) :p it limits the outputs to 0 and 1, like we want
-    val searchGranularity = searchGranularity //how wide one neuron will search for info. Bigger isn't always better! 0 is random
-    val percentageInformation = percentageInformation //how much information you give geometryBrain to start with as a decimal percentage. It's not entirely accurate
 
     fun geometricEquation(searchAddress: Array<Int>): Boolean {
         //define the equation you want geometryBrain to replicate here, or choose one of these
