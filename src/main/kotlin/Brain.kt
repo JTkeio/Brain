@@ -1,4 +1,5 @@
 package jtkeio.brain
+import kotlin.math.roundToInt
 import kotlin.random.Random
 
 //each entry in dimensions is a new input channel, the value represents each channel's possible values 0-n
@@ -180,13 +181,13 @@ class Brain(val dimensions: Array<Int>, val ranges: Array<Int>) {
 
         if (Random.nextDouble(0.0, neuronTypes.sum().toDouble()) < neuronTypes[0]/neuronTypes.sum()) { //a bit of randomness based on the % good/bad neurons gathered
             for (p in amalgamNeuron.indices) {
-                amalgamNeuron[p] /= if (neuronTypes[1] != 0) (neuronTypes[1]) else (1) //amalgam neuron is just a summation so far, but it should be an average. DO NOT divide by 0
+                amalgamNeuron[p] = ( amalgamNeuron[p].toDouble() / if (neuronTypes[1] != 0) (neuronTypes[1]) else (1) ).roundToInt() //amalgam neuron is just a summation so far, but it should be an average. DO NOT divide by 0
             }
             return amalgamNeuron //there were enough good neurons around this one, so it will become an average of them
         } else {
             return generateNeuronRandom() //there weren't many good neurons around this one, make a random one to test
         }
-    } //my algorithm for generating neurons based on previous information
+    } //my algorithm for generating neurons based on previous information [ARCHIVED]
 
     fun generateNeuronProximityAverageAbsolute(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
         if (searchGranularity < 0) { return generateNeuronRandom() }
@@ -217,7 +218,7 @@ class Brain(val dimensions: Array<Int>, val ranges: Array<Int>) {
 
         if (neuronTypes[0]<=neuronTypes[1]) { //removed probability
             for (p in amalgamNeuron.indices) {
-                amalgamNeuron[p] /= if (neuronTypes[1] != 0) (neuronTypes[1]) else (1) //amalgam neuron is just a summation so far, but it should be an average. DO NOT divide by 0
+                amalgamNeuron[p] = ( amalgamNeuron[p].toDouble() / if (neuronTypes[1] != 0) (neuronTypes[1]) else (1) ).roundToInt() //amalgam neuron is just a summation so far, but it should be an average. DO NOT divide by 0
             }
             return amalgamNeuron //there were enough good neurons around this one, so it will become an average of them
         } else {

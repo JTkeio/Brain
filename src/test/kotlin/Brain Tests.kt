@@ -1,12 +1,10 @@
 package jtkeio.brain
+import kotlin.math.pow
 import kotlin.random.Random
 
 
 fun main() {
-    for (lmao in 0..100) {
-        println(lmao.toDouble()/100)
-        println(geometryTest(arrayOf(100, 100), 2, lmao.toDouble()/100, false))
-    }
+    println(geometryTest(arrayOf(25, 50), 3, 0.2, true))
 }
 
 
@@ -29,10 +27,10 @@ fun geometryTest(dimensions: Array<Int>, searchGranularity: Int, percentageInfor
     fun geometricEquation(searchAddress: Array<Int>): Boolean {
         //define the equation you want geometryBrain to replicate here, or choose one of these
 
-        //return (searchAddress[0]-15).toFloat().pow(2) + (searchAddress[1]-15).toFloat().pow(2) > 30 //a circle
-        //return searchAddress[0]>25 //horizontal line
-        //return searchAddress[1]>25 //vertical line
-        return searchAddress[0] + searchAddress[1] > 100 //slanted line
+        return (searchAddress[0]-12).toFloat().pow(2) + (searchAddress[1]-25).toFloat().pow(2) > 30 //a circle
+        //return searchAddress[0] > 12 //horizontal line
+        //return searchAddress[1] > 12 //vertical line
+        //return searchAddress[0] + searchAddress[1] > 100 //slanted line
     }
 
     for (i in 0 until (geometryBrain.numberOfNeurons*percentageInformation).toInt()) {
@@ -61,5 +59,5 @@ fun geometryTest(dimensions: Array<Int>, searchGranularity: Int, percentageInfor
             accuracy += 1
         }
     }
-    return accuracy/geometryBrain.numberOfNeurons.toDouble() //return the accuracy of geometryBrain as a decimal percentage
+    return accuracy/geometryBrain.numberOfNeurons.toDouble() //prints the accuracy of geometryBrain as a decimal percentage
 }
