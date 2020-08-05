@@ -8,6 +8,8 @@ import kotlin.random.Random
 class Brain(val dimensions: Array<Int>, val ranges: Array<Int>) {
     val numberOfNeurons = multiplyArray(dimensions)
     val brain = Array(numberOfNeurons){Array(ranges.size){-1}} //initialize brain with arrays fitting the constraints from ranges but filled with -1 to signify emptiness
+    var searchAlgorithm = {dimensionalAddress:Array<Int>, searchGranularity:Int -> generateNeuronProximityAverageAbsolute(dimensionalAddress,searchGranularity)} //define default search algorithm
+    //please do write your own algorithms! just reassign this variable under your instance of Brain
 
     //Utilities
     fun multiplyArray(array: Array<Int>): Int {
@@ -89,7 +91,7 @@ class Brain(val dimensions: Array<Int>, val ranges: Array<Int>) {
         val searchNeuron = brain[neuronIndex]
 
         if (searchNeuron[0]<0) {
-            val newNeuron = generateNeuronProximityAverageAbsolute(dimensionalAddress, searchGranularity) //The neuron does not exist, construct it
+            val newNeuron = searchAlgorithm(dimensionalAddress, searchGranularity) //The neuron does not exist, construct it using the given algorithm
             pushNeuron(dimensionalAddress, newNeuron) //put the new neuron back into the brain
             return newNeuron //send it through!
         } else {
@@ -179,15 +181,15 @@ class Brain(val dimensions: Array<Int>, val ranges: Array<Int>) {
         }
         neuronTypes[0]-=1 //remove the seed (dimensionalAddress), which is always an Int, from the tally
 
-        if (Random.nextDouble(0.0, neuronTypes.sum().toDouble()) < neuronTypes[0]/neuronTypes.sum()) { //a bit of randomness based on the % good/bad neurons gathered
+        if (Random.nextDouble(0.0, neuronTypes.sum().toDouble()) > neuronTypes[0]/neuronTypes.sum().toDouble()) { //a bit of randomness based on the % good/bad neurons gathered
             for (p in amalgamNeuron.indices) {
-                amalgamNeuron[p] = ( amalgamNeuron[p].toDouble() / if (neuronTypes[1] != 0) (neuronTypes[1]) else (1) ).roundToInt() //amalgam neuron is just a summation so far, but it should be an average. DO NOT divide by 0
+                amalgamNeuron[p] = (amalgamNeuron[p].toDouble() / if (neuronTypes[1] != 0) (neuronTypes[1]) else (1) ).roundToInt() //amalgam neuron is just a summation so far, but it should be an average. DO NOT divide by 0
             }
             return amalgamNeuron //there were enough good neurons around this one, so it will become an average of them
         } else {
             return generateNeuronRandom() //there weren't many good neurons around this one, make a random one to test
         }
-    } //my algorithm for generating neurons based on previous information [ARCHIVED]
+    } //my algorithm for generating neurons based on previous information
 
     fun generateNeuronProximityAverageAbsolute(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
         if (searchGranularity < 0) { return generateNeuronRandom() }
