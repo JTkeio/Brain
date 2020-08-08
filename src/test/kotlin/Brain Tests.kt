@@ -1,4 +1,5 @@
 package jtkeio.brain
+import kotlin.math.absoluteValue
 import kotlin.math.pow
 import kotlin.random.Random
 
@@ -35,7 +36,7 @@ fun geometryTest(geometricEquation: (searchAddress: Array<Int>) -> Boolean, dime
 
 
     //Guess Remaining Information
-    for (j in 0 until geometryBrain.numberOfNeurons*4) {
+    for (j in 0 until geometryBrain.numberOfNeurons*10) {
         val tempAddress = geometryBrain.getDimensional(Random.nextInt(0, geometryBrain.numberOfNeurons), geometryBrain.dimensions)
         geometryBrain.pullNeuron(tempAddress, searchGranularity)
     } //arbitrarily looks at random points and guesses what should go there. For now, the algorithm being used has to be change in the Brain class file.
@@ -61,20 +62,23 @@ fun geometryTest(geometricEquation: (searchAddress: Array<Int>) -> Boolean, dime
 
 
 
+
+
 fun main() {
     //define the equation you want geometryBrain to replicate below, or choose one of these by uncommenting
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> YOUR EQUATION HERE}
 
     //2D
-    //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> (searchAddress[0]-50).toFloat().pow(2) + (searchAddress[1]-50).toFloat().pow(2) < 1000} //a circle
+    val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> (searchAddress[0]-50).toFloat().pow(2) + (searchAddress[1]-50).toFloat().pow(2) < 1000} //a circle
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] > 50} //horizontal line
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[1] > 50} //vertical line
-    val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] + searchAddress[1] < 100} //slanted line
+    //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] + searchAddress[1] < 100} //slanted line
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> (searchAddress[0] > 20) and (searchAddress[0] < 80) and (searchAddress[1] > 20) and (searchAddress[1] < 80)} //square
+    //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0]%4>1} //stripes  --the worst by miles lol
 
     //3D
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] + searchAddress[1] + searchAddress[2] > 30} //diagonally slanted line
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> (searchAddress[0]>2) and (searchAddress[0]<8) and (searchAddress[1]>2) and (searchAddress[1]<8) and (searchAddress[2]>2) and (searchAddress[2]<8)} //cube
 
-    println(geometryTest(geometricEquation, arrayOf(100,100), 10, 0.05, true))
+    println(geometryTest(geometricEquation, arrayOf(100,100), 5, 0.01, true))
 }

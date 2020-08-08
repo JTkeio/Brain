@@ -1,4 +1,5 @@
 package jtkeio.brain
+import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -165,10 +166,12 @@ class Brain(val dimensions: Array<Int>, val ranges: Array<Int>) {
             for (r in searchArray.indices) {
                 searchArray[r]-=searchGranularity //the coordinates need to be shifted so they are centered on the seed
             }
+
             val searchAddress = getLinear(dimensionalAddress, dimensions) + getLinear(searchArray, dimensions) //overlay the seed with searchArray to move the search neuron
             if (searchAddress<0 || searchAddress>numberOfNeurons-1) {
                 continue //check for extraneous searches :P fencepost issue on numberOfNeurons
             }
+
             val searchNeuron = brain[searchAddress]
             if (searchNeuron[0]<0) {
                 neuronTypes[0]+=1 //this neuron is empty
@@ -199,13 +202,16 @@ class Brain(val dimensions: Array<Int>, val ranges: Array<Int>) {
 
         for (k in 0 until multiplyArray(bubbleArray)) {
             val searchArray = getDimensional(k, bubbleArray) //searchArray is constructed with coordinates for each point as defined by bubbleArray
+
             for (r in searchArray.indices) {
                 searchArray[r]-=searchGranularity //the coordinates need to be shifted so they are centered on the seed
             }
+
             val searchAddress = getLinear(dimensionalAddress, dimensions) + getLinear(searchArray, dimensions) //overlay the seed with searchArray to move the search neuron
             if (searchAddress<0 || searchAddress>numberOfNeurons-1) {
                 continue //check for extraneous searches :P fencepost issue on numberOfNeurons
             }
+
             val searchNeuron = brain[searchAddress]
             if (searchNeuron[0]<0) {
                 neuronTypes[0]+=1 //this neuron is empty
@@ -218,7 +224,7 @@ class Brain(val dimensions: Array<Int>, val ranges: Array<Int>) {
         }
         neuronTypes[0]-=1 //remove the seed (dimensionalAddress), which is always an Int, from the tally
 
-        if (neuronTypes[0]<=neuronTypes[1]) { //removed probability
+        if (neuronTypes[0]<neuronTypes[1]) { //removed probability, an equal amount of full and empty neurons is still uncertain
             for (p in amalgamNeuron.indices) {
                 amalgamNeuron[p] = ( amalgamNeuron[p].toDouble() / if (neuronTypes[1] != 0) (neuronTypes[1]) else (1) ).roundToInt() //amalgam neuron is just a summation so far, but it should be an average. DO NOT divide by 0
             }
