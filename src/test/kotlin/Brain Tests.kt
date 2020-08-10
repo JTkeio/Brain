@@ -69,16 +69,17 @@ fun main() {
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> YOUR EQUATION HERE}
 
     //2D
-    val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> (searchAddress[0]-50).toFloat().pow(2) + (searchAddress[1]-50).toFloat().pow(2) < 1000} //a circle
+    //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> (searchAddress[0]-50).toFloat().pow(2) + (searchAddress[1]-50).toFloat().pow(2) < 1000} //a circle
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] > 50} //horizontal line
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[1] > 50} //vertical line
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] + searchAddress[1] < 100} //slanted line
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> (searchAddress[0] > 20) and (searchAddress[0] < 80) and (searchAddress[1] > 20) and (searchAddress[1] < 80)} //square
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0]%4>1} //stripes  --the worst by miles lol
+    val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] > 80 || searchAddress[1] > 85 || searchAddress[0] + searchAddress[1] < 50} //combination of lines
 
     //3D
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] + searchAddress[1] + searchAddress[2] > 30} //diagonally slanted line
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> (searchAddress[0]>2) and (searchAddress[0]<8) and (searchAddress[1]>2) and (searchAddress[1]<8) and (searchAddress[2]>2) and (searchAddress[2]<8)} //cube
 
-    println(geometryTest(geometricEquation, arrayOf(100,100), 5, 0.01, true))
+    println(geometryTest(geometricEquation, arrayOf(100,100), 5, 0.05, true))
 }
