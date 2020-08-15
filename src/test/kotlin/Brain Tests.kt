@@ -39,7 +39,7 @@ fun geometryTest(geometricEquation: (searchAddress: Array<Int>) -> Boolean, dime
     for (j in 0 until geometryBrain.numberOfNeurons*10) {
         val tempAddress = geometryBrain.getDimensional(Random.nextInt(0, geometryBrain.numberOfNeurons), geometryBrain.dimensions)
         geometryBrain.pullNeuron(tempAddress, searchGranularity)
-    } //arbitrarily looks at random points and guesses what should go there. For now, the algorithm being used has to be change in the Brain class file.
+    } //arbitrarily looks at random points and guesses what should go there. Change the algorithm at   geometryBrain.searchAlgorithm
 
     for (k in 0 until geometryBrain.numberOfNeurons) {
         val tempAddress = geometryBrain.getDimensional(k, geometryBrain.dimensions)

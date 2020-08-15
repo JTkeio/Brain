@@ -1,4 +1,6 @@
 package jtkeio.brain
+import java.io.File
+import java.util.stream.Collectors.toList
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 import kotlin.random.Random
@@ -6,7 +8,7 @@ import kotlin.random.Random
 //each entry in dimensions is a new input channel, the value represents each channel's possible values 0-n
 //each entry in ranges is a new output channel, the value represents each channel's possible values 0-n
 
-class Brain(val dimensions: Array<Int>, val ranges: Array<Int>) {
+class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
     val numberOfNeurons = multiplyArray(dimensions)
     val brain = Array(numberOfNeurons){Array(ranges.size){-1}} //initialize brain with arrays fitting the constraints from ranges but filled with -1 to signify emptiness
     var searchAlgorithm = {dimensionalAddress:Array<Int>, searchGranularity:Int -> generateNeuronProximityAverageAbsolute(dimensionalAddress,searchGranularity)} //define default search algorithm
@@ -57,7 +59,81 @@ class Brain(val dimensions: Array<Int>, val ranges: Array<Int>) {
         return dimensionalAddress
     } //converts any linear coordinate into an equivalent multi-dimensional coordinate
 
-    //Brain Interaction (choose algorithm on ln. 89)
+    fun getSpaces(linearAddress: Int, tempDimensions: Array<Int>): Int {
+        val tempArray = getDimensional(linearAddress, tempDimensions)
+        var tempSpacer: Boolean
+        var spaceCount = 0
+        for (t in tempArray.indices) {
+            tempSpacer = true
+            for (r in t until tempArray.size) {
+                tempSpacer = tempSpacer and (tempArray[r] + 1 == tempDimensions[r])
+            }
+            if (tempSpacer) {spaceCount++}
+        }
+        return spaceCount
+    } //returns the number of appropriate spaces behind the given address to show the proper dimensions
+
+    //Information Handling
+    fun print(){
+        for (u in 0 until numberOfNeurons) {
+            val tempNeuron = brain[u]
+
+            if (tempNeuron[0]<0) {print("  ")} else {
+                val tempArray = Array(tempNeuron.size){0}
+                for (w in tempNeuron.indices) {
+                    tempArray[w] = tempNeuron[w]
+                }
+
+                print(tempArray.joinToString(","))
+                print(" ")
+            }
+
+            for (q in 0 until getSpaces(u, dimensions)) {println()}
+        }
+    } //"displays" the brain.
+
+    fun printBinaryImage(){
+        for (u in 0 until numberOfNeurons) {
+            val tempNeuron = brain[u]
+            if (tempNeuron[0]<0) {print("   ")} else {
+                if (tempNeuron.size > 1) {println("no array size (ranges) greater than one allowed!!!")} else if (tempNeuron[0] > 0) {print("#")} else {print(". ")}
+                print(" ")
+            }
+
+            for (q in 0 until getSpaces(u, dimensions)) {println()}
+        }
+    } //also "displays" the brain, but only when there is only one value in ranges. 0 is empty and anything greater (ideally 1) is a #
+
+    fun store(address: String) {
+        val file = File(address)
+        val stream = file.writer()
+        stream.write(dimensions.toList().joinToString(",") + "\n") //writes the dimensions of the brain on their own line
+        stream.write(ranges.toList().joinToString(",") + "\n") //writes the ranges of the brain on their own line
+
+        val neuronList = Array<String>(numberOfNeurons){""} //compile all neurons into an array of strings
+        for (tempIndex in 0 until numberOfNeurons) {
+            neuronList[tempIndex] = brain[tempIndex].joinToString(",") //convert every neuron from an array of integers to strings with comma separators and add them to neuronList
+        }
+
+        stream.write(neuronList.joinToString(" ")) //write every neuron to the file with spaces in between
+        stream.close()
+    } //writes brain to a file to allow for long-term development, multiple sources for a single brain, or just storing what a particular brain has learned
+
+    fun read(address: String) {
+        val file = File(address)
+        val lines = file.readLines()
+        val readDimensions = lines[0].split(",").map{str -> str.toInt()}.toTypedArray()
+        val readRanges = lines[1].split(",").map{str -> str.toInt()}.toTypedArray()
+        val readBrain = lines[2].split(" ").map{it.split(",").map{it.toInt()}.toTypedArray()}.toTypedArray()
+
+        this.dimensions = readDimensions
+        this.ranges = readRanges
+        for (i in readBrain.indices) {
+            this.brain[i] = readBrain[i] //copy each neuron one by one
+        }
+    } //reads brain from a file directly into this one
+
+    //Brain Interaction (choose algorithm with the searchAlgorithm variable)
     fun pushNeuron(dimensionalAddress:Array<Int>, values: Array<Int>): Int {
         val tempAddress = getLinear(dimensionalAddress, dimensions)
         if (tempAddress<0 || tempAddress>numberOfNeurons) {
@@ -100,51 +176,6 @@ class Brain(val dimensions: Array<Int>, val ranges: Array<Int>) {
         }
 
     } //C1: no neuron exists, create one from surrounding neurons \/ C2: neuron exists, return data
-
-    //Information Display
-    fun print(){
-        for (u in 0 until numberOfNeurons) {
-            val tempNeuron = brain[u]
-            if (tempNeuron[0]<0) {print("  ")} else {
-                for (w in tempNeuron) {
-                    print("$w,")
-                }
-                print(" ")
-            }
-
-
-            val tempArray = getDimensional(u, dimensions)
-            var tempSpacer: Boolean
-            for (t in tempArray.indices) {
-                tempSpacer = true
-                for (r in t until tempArray.size) {
-                    tempSpacer = tempSpacer and (tempArray[r]+1==dimensions[r])
-                }
-                if (tempSpacer){println()}
-            }
-        }
-    } //"displays" the brain.
-
-    fun printBinaryImage(){
-        for (u in 0 until numberOfNeurons) {
-            val tempNeuron = brain[u]
-            if (tempNeuron[0]<0) {print("   ")} else {
-                if (tempNeuron.size > 1) {println("no size greater than one allowed!!!")} else if (tempNeuron[0] > 0) {print("#")} else {print(". ")}
-                print(" ")
-            }
-
-
-            val tempArray = getDimensional(u, dimensions)
-            var tempSpacer: Boolean
-            for (t in tempArray.indices) {
-                tempSpacer = true
-                for (r in t until tempArray.size) {
-                    tempSpacer = tempSpacer and (tempArray[r]+1==dimensions[r])
-                }
-                if (tempSpacer){println()}
-            }
-        }
-    } //also "displays" the brain, but only when there is only one value in ranges. 0 is empty and anything greater (ideally 1) is a #
 
     //Learning Algorithms (per neuron)
     fun generateNeuronRandom(): Array<Int> {
