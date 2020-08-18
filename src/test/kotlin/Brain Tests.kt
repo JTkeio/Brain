@@ -2,6 +2,7 @@ package jtkeio.brain
 
 import kotlin.math.absoluteValue
 import kotlin.math.pow
+import kotlin.math.sin
 import kotlin.random.Random
 
 // NOTE from brainboy:
@@ -74,13 +75,14 @@ fun main() {
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] > 50} //horizontal line
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[1] > 50} //vertical line
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] + searchAddress[1] < 100} //slanted line
+    val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] > 7*sin(searchAddress[1].toDouble()/4) + 50} //sine wave
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> (searchAddress[0] > 20) and (searchAddress[0] < 80) and (searchAddress[1] > 20) and (searchAddress[1] < 80)} //square
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0]%4>1} //stripes  --the worst by miles lol
-    val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] > 80 || searchAddress[1] > 85 || searchAddress[0] + searchAddress[1] < 50} //combination of lines
+    //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] > 80 || searchAddress[1] > 85 || searchAddress[0] + searchAddress[1] < 50} //combination of lines
 
     //3D
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] + searchAddress[1] + searchAddress[2] > 30} //diagonally slanted line
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> (searchAddress[0]>2) and (searchAddress[0]<8) and (searchAddress[1]>2) and (searchAddress[1]<8) and (searchAddress[2]>2) and (searchAddress[2]<8)} //cube
 
-    println(geometryTest(geometricEquation, arrayOf(100,100), 5, 0.05, true))
+    println(geometryTest(geometricEquation, arrayOf(100,100), 3, 0.1, true))
 }
