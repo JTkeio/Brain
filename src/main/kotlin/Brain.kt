@@ -144,7 +144,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
 
         if (values.size == ranges.size) {
             for (g in values.indices) {
-                if ((values[g] > ranges[g]) || (values[g] < 0)) {
+                if (values[g] > ranges[g]) {
                     println("Extraneous proposed values!")
                     return -1
                 }
@@ -154,7 +154,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
         }
         println("Too many or too few values!")
         return -2
-    } //pushes whatever you want into the brain at the place you want, given the proper constraints
+    } //pushes whatever you want into the brain at the place you want, given the proper constraints [ADDED ABILITY TO PUSH NEGATIVE NUMBERS FOR DATA ERASURE]
 
     fun pullNeuron(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
         if (dimensionalAddress.size != dimensions.size) {
