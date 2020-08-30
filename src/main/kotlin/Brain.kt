@@ -125,11 +125,11 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
         val lines = file.readLines()
         val readDimensions = lines[0].split(",").map{str -> str.toInt()}.toTypedArray()
         val readRanges = lines[1].split(",").map{str -> str.toInt()}.toTypedArray()
-        val readBrain = lines[2].split(" ").map{it.split(",").map{it.toInt()}.toTypedArray()}.toTypedArray()
+        val readBrain = lines[2].split(" ").map{it.split(",").map{it.toInt()}.toTypedArray()}.toTypedArray().iterator()
 
         this.dimensions = readDimensions
         this.ranges = readRanges
-        for (i in readBrain.indices) {
+        for (i in readBrain.next()) {
             this.brain[i] = readBrain[i] //copy each neuron one by one
         }
     } //reads brain from a file directly into this one
@@ -138,33 +138,33 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
     fun pushNeuron(dimensionalAddress:Array<Int>, values: Array<Int>): Int {
         val tempAddress = getLinear(dimensionalAddress, dimensions)
         if (tempAddress<0 || tempAddress>numberOfNeurons) {
-            println("invalid dimensional address when pushing a neuron!")
+            println("invalid dimensional address when pushing a neuron")
             return -3
         }
 
         if (values.size == ranges.size) {
             for (g in values.indices) {
                 if (values[g] > ranges[g]) {
-                    println("Extraneous proposed values!")
+                    println("Extraneous proposed values when pushing a neuron")
                     return -1
                 }
             }
             brain[tempAddress] = values
             return 1
         }
-        println("Too many or too few values!")
+        println("Too many or too few values when pushing a neuron")
         return -2
     } //pushes whatever you want into the brain at the place you want, given the proper constraints [ADDED ABILITY TO PUSH NEGATIVE NUMBERS FOR DATA ERASURE]
 
     fun pullNeuron(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
         if (dimensionalAddress.size != dimensions.size) {
-            print("Invalid dimensional address")
+            print("Invalid dimensional address when pulling a neuron")
             return emptyArray()
         }
         val neuronIndex = getLinear(dimensionalAddress, dimensions)
 
         if (neuronIndex<0 || neuronIndex>numberOfNeurons) {
-            println("invalid dimensional address when pulling a neuron!")
+            println("invalid dimensional address when pulling a neuron")
             return emptyArray()
         }
         val searchNeuron = brain[neuronIndex]
