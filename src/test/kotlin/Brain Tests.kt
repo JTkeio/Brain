@@ -25,7 +25,7 @@ fun geometryTest(geometricEquation: (searchAddress: Array<Int>) -> Boolean, dime
 
 
     val geometryBrain = Brain(dimensions, arrayOf(1)) //don't change the arrayOf(1) :p it limits the outputs to 0 and 1, like we want
-    geometryBrain.searchAlgorithm = {da:Array<Int>, sg:Int -> geometryBrain.generateNeuronProximityAverageProbability(da,sg)} //Specify which algorithm to use. Choose one from Brain or write one yourself.
+    geometryBrain.searchAlgorithm = {da:Array<Int>, sg:Int -> geometryBrain.generateNeuronProximityPluralityProbability(da,sg)} //Specify which algorithm to use. Choose one from Brain or write one yourself.
 
 
     //Insert Information
@@ -84,5 +84,5 @@ fun main() {
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] + searchAddress[1] + searchAddress[2] > 30} //diagonally slanted line
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> (searchAddress[0]>2) and (searchAddress[0]<8) and (searchAddress[1]>2) and (searchAddress[1]<8) and (searchAddress[2]>2) and (searchAddress[2]<8)} //cube
 
-    println(geometryTest(geometricEquation, arrayOf(100,100), 3, 0.1, true))
+    println(geometryTest(geometricEquation, arrayOf(100,100), 5, 0.1, true))
 }
