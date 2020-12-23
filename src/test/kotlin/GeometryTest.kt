@@ -25,8 +25,11 @@ fun geometryTest(geometricEquation: (searchAddress: Array<Int>) -> Boolean, dime
 
 
     val geometryBrain = Brain(dimensions, arrayOf(1)) //don't change the arrayOf(1) :p it limits the outputs to 0 and 1, like we want
-    geometryBrain.searchAlgorithm = {da:Array<Int>, sg:Int -> geometryBrain.generateNeuronProximityPluralityProbability(da,sg)} //Specify which algorithm to use. Choose one from Brain or write one yourself.
-
+    geometryBrain.searchAlgorithm = {da:Array<Int>, sg:Int -> geometryBrain.generateNeuronProximityAverageAbsolute(da,sg)} //Specify which algorithm to use. Choose one from Brain, below, or write one yourself.
+    //generateNeuronProximityAverageProbability(da, sg)
+    //generateNeuronProximityAverageAbsolute(da, sg)
+    //generateNeuronProximityPluralityProbability(da, sg)
+    //generateNeuronProximityPluralityAbsolute(da, sg)
 
     //Insert Information
     for (i in 0 until (geometryBrain.numberOfNeurons*percentageInformation).toInt()) {
@@ -34,7 +37,7 @@ fun geometryTest(geometricEquation: (searchAddress: Array<Int>) -> Boolean, dime
         geometryBrain.pushNeuron(tempAddress, if (geometricEquation(tempAddress)) (arrayOf(1)) else (arrayOf(0)))
     } //puts in the correct information at random points. The amount of random (but correct!) information is determined by percentageInformation
 
-    if (doPrint) {geometryBrain.printBinaryImage()} //print the information that was inserted randomly
+    //if (doPrint) {geometryBrain.printBinaryImage()} //print the information that was inserted randomly
 
 
     //Guess Remaining Information
@@ -71,11 +74,11 @@ fun main() {
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> YOUR EQUATION HERE}
 
     //2D
-    //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> (searchAddress[0]-50).toFloat().pow(2) + (searchAddress[1]-50).toFloat().pow(2) < 1000} //a circle
+    val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> (searchAddress[0]-50).toFloat().pow(2) + (searchAddress[1]-50).toFloat().pow(2) < 1000} //a circle
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] > 50} //horizontal line
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[1] > 50} //vertical line
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] + searchAddress[1] < 100} //slanted line
-    val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] > 7*sin(searchAddress[1].toDouble()/4) + 50} //sine wave
+    //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] > 7*sin(searchAddress[1].toDouble()/4) + 50} //sine wave
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> (searchAddress[0] > 20) and (searchAddress[0] < 80) and (searchAddress[1] > 20) and (searchAddress[1] < 80)} //square
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0]%4>1} //stripes  --the worst by miles lol
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] > 80 || searchAddress[1] > 85 || searchAddress[0] + searchAddress[1] < 50} //combination of lines
@@ -84,5 +87,8 @@ fun main() {
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> searchAddress[0] + searchAddress[1] + searchAddress[2] > 30} //diagonally slanted line
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> (searchAddress[0]>2) and (searchAddress[0]<8) and (searchAddress[1]>2) and (searchAddress[1]<8) and (searchAddress[2]>2) and (searchAddress[2]<8)} //cube
 
-    println(geometryTest(geometricEquation, arrayOf(100,100), 5, 0.1, true))
+
+    for (q in 1..5) {
+        println(geometryTest(geometricEquation, arrayOf(100, 100), q*2, 0.01, true))
+    }
 }

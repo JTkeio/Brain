@@ -263,7 +263,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
         } else {
             return generateNeuronRandom() //there weren't many good neurons around this one, make a random one to test
         }
-    } //the same as generateNeuronProximityAverageRandom without the randomness lol
+    } //the same as generateNeuronProximityAverageRandom without the randomness
 
     fun generateNeuronProximityPluralityProbability(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
         if (searchGranularity < 1) { return generateNeuronRandom() }
@@ -331,7 +331,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
         } else {
             return generateNeuronRandom() //there weren't many good neurons around this one, make a random one to test
         }
-    }
+    } //the same as generateNeuronPluralityProbability without the randomness
 }
 
 fun main(){}
