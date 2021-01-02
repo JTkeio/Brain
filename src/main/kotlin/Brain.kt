@@ -13,6 +13,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
     var searchAlgorithm = {dimensionalAddress:Array<Int>, searchGranularity:Int -> generateNeuronProximityAverageAbsolute(dimensionalAddress,searchGranularity)} //define default search algorithm
     //please do write your own algorithms! just reassign this variable under your instance of Brain
 
+
     //Utilities
     fun multiplyArray(array: Array<Int>): Int {
     var initial = 1
@@ -71,6 +72,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
         }
         return spaceCount
     } //returns the number of appropriate spaces behind the given address to show the proper dimensions
+
 
     //Information Handling
     fun print(){
@@ -132,6 +134,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
         }
     } //reads brain from a file directly into this one
 
+
     //Brain Interaction (choose algorithm with the searchAlgorithm variable)
     fun pushNeuron(dimensionalAddress:Array<Int>, values: Array<Int>): Int {
         val tempAddress = getLinear(dimensionalAddress, dimensions)
@@ -167,7 +170,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
         }
         val searchNeuron = brain[neuronIndex]
 
-        if (searchNeuron[0]<0) {
+        if (searchNeuron[0]<0 && searchGranularity>0) {
             val newNeuron = searchAlgorithm(dimensionalAddress, searchGranularity) //The neuron does not exist, construct it using the given algorithm
             pushNeuron(dimensionalAddress, newNeuron) //put the new neuron back into the brain
             return newNeuron //send it through!
@@ -176,6 +179,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
         }
 
     } //just grabs data if searchGranularity <= 0 or   //C1: no neuron exists, create one from surrounding neurons \/ C2: neuron exists, return data
+
 
     //Learning Algorithms (per neuron)
     fun generateNeuronRandom(): Array<Int> {
@@ -268,7 +272,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
     fun generateNeuronProximityPluralityProbability(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
         if (searchGranularity < 1) { return generateNeuronRandom() }
         val neuronTypes = Array(2){0}
-        var valueMap = Array<Int>(multiplyArray(ranges)+1){0} //fencepost issue on size
+        var valueMap = Array<Int>(multiplyArray(ranges.map{x -> x+1}.toTypedArray())){0} //fencepost issue on size
         val bubbleArray = Array(dimensions.size){(2*searchGranularity)+1} //bubble refers to the shape :) this defines the size and dimensions of the search bubble
 
         for (k in 0 until multiplyArray(bubbleArray)) {
@@ -302,7 +306,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
     fun generateNeuronProximityPluralityAbsolute(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
         if (searchGranularity < 1) { return generateNeuronRandom() }
         val neuronTypes = Array(2){0}
-        var valueMap = Array<Int>(multiplyArray(ranges)+1){0} //fencepost issue on size
+        var valueMap = Array<Int>(multiplyArray(ranges.map{x -> x+1}.toTypedArray())){0} //fencepost issue on size
         val bubbleArray = Array(dimensions.size){(2*searchGranularity)+1} //bubble refers to the shape :) this defines the size and dimensions of the search bubble
 
         for (k in 0 until multiplyArray(bubbleArray)) {
@@ -326,7 +330,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
         }
         neuronTypes[0]-=1 //remove the seed (dimensionalAddress), which is always an Int (-1), from the tally
 
-        if (neuronTypes[0]<=neuronTypes[1]) { //removed probability, an equal amount of full and empty neurons defers to the full ones
+        if (neuronTypes[1]>=neuronTypes[0]) { //removed probability, an equal amount of full and empty neurons defers to the full ones
             return getDimensional(valueMap.indexOf(valueMap.max()), ranges) //this was the most-seen neuron, return it
         } else {
             return generateNeuronRandom() //there weren't many good neurons around this one, make a random one to test

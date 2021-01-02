@@ -1,30 +1,73 @@
 package jtkeio.brain
 import java.io.File
+import javax.imageio.ImageIO
+import java.awt.Color
+import java.awt.image.BufferedImage
+import kotlin.random.Random
 
-val BMPInfo = arrayOf(66, 77, 102, 117, 0, 0, 0, 0, 0, 0, 54, 0, 0, 0, 40, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0, 1, 0, 24, 0, 0, 0, 0, 0, 48, 117, 0, 0, -60, 14, 0, 0, -60, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-//these are the first 52 bytes of a 100x100 BMP file
+fun imageTest(image: BufferedImage, searchGranularity: Int, percentageInformation: Double, outputFolder: String = "") {
+    val imageBrain = Brain(arrayOf(image.width, image.height), arrayOf(255,255,255))
+    imageBrain.searchAlgorithm = {da, sg -> imageBrain.generateNeuronProximityAverageProbability(da, sg)} //choose which algorithm Brain uses
 
-fun grabColorBMP(path: String, color: String): Array<Int> {
-    val image = File(path).readBytes() //read the BMP file by bytes
-    val numberOfPixels = (image.size-52)/3 //BMP files are 52 + 3*numberOfPixels
-    val colorPixels = Array(numberOfPixels){-1} //initialize the map of one color channel, one spot for each pixel
 
-    val colorShift = when(color){
-        "r", "R" -> 0
-        "g", "G" -> 2
-        "b", "B" -> 1
-        else -> -0
-    } //translate the input string into the shift required for that color, default to red
+    //Insert Information
+    for (a in 0 until (imageBrain.numberOfNeurons*percentageInformation).toInt()) {
+        val tempAddress = imageBrain.getDimensional(Random.nextInt(0, imageBrain.numberOfNeurons), imageBrain.dimensions)
+        val tempColor = Color(image.getRGB(tempAddress[0], tempAddress[1]))
+        imageBrain.pushNeuron(tempAddress, arrayOf(tempColor.blue, tempColor.green, tempColor.red))
+        println("insert")
+    } //puts in the correct information at random points. The amount of random (but correct!) information is determined by percentageInformation
 
-    for (i in 0 until numberOfPixels) {
-        colorPixels[i] = image[3*i+54+colorShift].toInt() //pixel values start on 53, incrementing by 3 grabs the next value of the same color, colorShift just moves which color is grabbed
-    } //map one color's data into colorPixels
+    if (outputFolder.isNotEmpty()) {
+        val outputImage = BufferedImage(image.width, image.height, image.type)
 
-    return colorPixels
-} //returns a list of values per color per pixel of a BMP file
+        for (p in 0 until image.height) {
+            for (o in 0 until image.width) {
+                var outputColor = imageBrain.pullNeuron(arrayOf(o, p), 0)
+                if (outputColor[0]<0) {
+                    outputColor = Array(imageBrain.ranges.size){0}
+                }
+                outputImage.setRGB(o, p, Color(outputColor[2], outputColor[1], outputColor[0]).rgb)
+            }
+        }
+        ImageIO.write(outputImage, "bmp", File("$outputFolder/ImageBrain_Data.bmp"))
+    } //output the information that was inserted randomly
+
+
+
+    //Guess Remaining Information
+    for (b in 0 until imageBrain.numberOfNeurons*3) {
+        val tempAddress = imageBrain.getDimensional(Random.nextInt(0, imageBrain.numberOfNeurons), imageBrain.dimensions)
+        imageBrain.pullNeuron(tempAddress, searchGranularity)
+        println("guess $b")
+    } //guess color values at randomly ordered pixels using searchAlgorithm
+
+    for (c in 0 until imageBrain.numberOfNeurons) {
+        val tempAddress = imageBrain.getDimensional(c, imageBrain.dimensions)
+        imageBrain.pullNeuron(tempAddress, searchGranularity)
+        println("plow $c")
+    } //clean-up run that guarantees no pixel leaves empty
+
+    if (outputFolder.isNotEmpty()) {
+        val outputImage = BufferedImage(image.width, image.height, image.type)
+
+        for (l in 0 until image.height) {
+            for (k in 0 until image.width) {
+                var outputColor = imageBrain.pullNeuron(arrayOf(k, l), 0)
+                if (outputColor[0]<0) {outputColor = Array(imageBrain.ranges.size){0}}
+                outputImage.setRGB(k, l, Color(outputColor[2], outputColor[1], outputColor[0]).rgb)
+            }
+        }
+        ImageIO.write(outputImage, "bmp", File("$outputFolder/ImageBrain_Output.bmp"))
+    } //output the final image
+}
+
+
 
 
 
 fun main() {
-    grabColorBMP("C:/Users/Jacob Tkeio/Desktop/Programs/Kotlin Projects/Batman.bmp", "r")
+    val input = File("C:/Users/Jacob Tkeio/Desktop/vik.jpg")
+    val image = ImageIO.read(input)
+    imageTest(image, 14, .01, "C:/Users/Jacob Tkeio/Desktop")
 }

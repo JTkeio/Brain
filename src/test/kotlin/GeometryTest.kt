@@ -31,6 +31,7 @@ fun geometryTest(geometricEquation: (searchAddress: Array<Int>) -> Boolean, dime
     //generateNeuronProximityPluralityProbability(da, sg)
     //generateNeuronProximityPluralityAbsolute(da, sg)
 
+
     //Insert Information
     for (i in 0 until (geometryBrain.numberOfNeurons*percentageInformation).toInt()) {
         val tempAddress = geometryBrain.getDimensional(Random.nextInt(0, geometryBrain.numberOfNeurons), geometryBrain.dimensions)
