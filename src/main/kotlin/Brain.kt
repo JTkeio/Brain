@@ -36,7 +36,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
             linearAddress += tempNumberOfNeurons*dimensionalAddress[x]
         }
         return linearAddress
-    } //converts any multi-dimensional coordinate into an equivalent one-dimensional coordinate
+    } //converts any multi-dimensional coordinate into an equivalent one-dimensional coordinate, default dimensions are Brain dimensions
 
     fun getDimensional(linearAddress: Int, tempDimensions: Array<Int> = dimensions): Array<Int> {
         var tempNumberOfNeurons = multiplyArray(tempDimensions)
@@ -57,10 +57,10 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
             }
         }
         return dimensionalAddress
-    } //converts any linear coordinate into an equivalent multi-dimensional coordinate
+    } //converts any linear coordinate into an equivalent multi-dimensional coordinate, default dimensions are Brain dimensions
 
-    fun getSpaces(linearAddress: Int, tempDimensions: Array<Int>): Int {
-        val tempArray = getDimensional(linearAddress, tempDimensions)
+    fun getSpaces(linearAddress: Int, tempDimensions: Array<Int> = dimensions): Int {
+        val tempArray = getDimensional(linearAddress)
         var tempSpacer: Boolean
         var spaceCount = 0
         for (t in tempArray.indices) {
@@ -89,7 +89,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
                 print(" ")
             }
 
-            for (q in 0 until getSpaces(u, dimensions)) {println()}
+            for (q in 0 until getSpaces(u)) {println()}
         }
     } //"displays" the brain.
 
@@ -101,7 +101,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
                 print(" ")
             }
 
-            for (q in 0 until getSpaces(u, dimensions)) {println()}
+            for (q in 0 until getSpaces(u)) {println()}
         }
     } //also "displays" the brain, but only when there is only one value in ranges. 0 is empty and anything greater (ideally 1) is a #
 
@@ -137,7 +137,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
 
     //Brain Interaction (choose algorithm with the searchAlgorithm variable)
     fun pushNeuron(dimensionalAddress:Array<Int>, values: Array<Int>): Int {
-        val tempAddress = getLinear(dimensionalAddress, dimensions)
+        val tempAddress = getLinear(dimensionalAddress)
         if (tempAddress<0 || tempAddress>numberOfNeurons) {
             println("invalid dimensional address when pushing a neuron")
             return -3
@@ -162,7 +162,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
             print("Invalid dimensional address when pulling a neuron")
             return emptyArray()
         }
-        val neuronIndex = getLinear(dimensionalAddress, dimensions)
+        val neuronIndex = getLinear(dimensionalAddress)
 
         if (neuronIndex<0 || neuronIndex>numberOfNeurons) {
             println("invalid dimensional address when pulling a neuron")
@@ -170,7 +170,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
         }
         val searchNeuron = brain[neuronIndex]
 
-        if (searchNeuron[0]<0 && searchGranularity>0) {
+        if (searchNeuron[0]<0 && searchGranularity>-1) {
             val newNeuron = searchAlgorithm(dimensionalAddress, searchGranularity) //The neuron does not exist, construct it using the given algorithm
             pushNeuron(dimensionalAddress, newNeuron) //put the new neuron back into the brain
             return newNeuron //send it through!
@@ -178,7 +178,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
             return searchNeuron //The neuron exists or we just want the data, so send it through!
         }
 
-    } //just grabs data if searchGranularity <= 0 or   //C1: no neuron exists, create one from surrounding neurons \/ C2: neuron exists, return data
+    } //just grabs data if searchGranularity < 0 or   //C1: no neuron exists, create one from surrounding neurons \/ C2: neuron exists, return data
 
 
     //Learning Algorithms (per neuron)
@@ -202,7 +202,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
                 searchArray[r]-=searchGranularity //the coordinates need to be shifted so they are centered on the seed
             }
 
-            val searchAddress = getLinear(dimensionalAddress, dimensions) + getLinear(searchArray, dimensions) //overlay the seed with searchArray to move the search neuron
+            val searchAddress = getLinear(dimensionalAddress) + getLinear(searchArray) //overlay the seed with searchArray to move the search neuron
             if (searchAddress<0 || searchAddress>numberOfNeurons-1) {
                 continue //check for extraneous searches :P fencepost issue on numberOfNeurons
             }
@@ -242,7 +242,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
                 searchArray[r]-=searchGranularity //the coordinates need to be shifted so they are centered on the seed
             }
 
-            val searchAddress = getLinear(dimensionalAddress, dimensions) + getLinear(searchArray, dimensions) //overlay the seed with searchArray to move the search neuron
+            val searchAddress = getLinear(dimensionalAddress) + getLinear(searchArray) //overlay the seed with searchArray to move the search neuron
             if (searchAddress<0 || searchAddress>numberOfNeurons-1) {
                 continue //check for extraneous searches :P fencepost issue on numberOfNeurons
             }
@@ -281,7 +281,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
                 searchArray[r]-=searchGranularity //the coordinates need to be shifted so they are centered on the seed
             }
 
-            val searchAddress = getLinear(dimensionalAddress, dimensions) + getLinear(searchArray, dimensions) //overlay the seed with searchArray to move the search neuron
+            val searchAddress = getLinear(dimensionalAddress) + getLinear(searchArray) //overlay the seed with searchArray to move the search neuron
             if (searchAddress<0 || searchAddress>numberOfNeurons-1) {
                 continue //check for extraneous searches :P fencepost issue on numberOfNeurons
             }
@@ -315,7 +315,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
                 searchArray[r]-=searchGranularity //the coordinates need to be shifted so they are centered on the seed
             }
 
-            val searchAddress = getLinear(dimensionalAddress, dimensions) + getLinear(searchArray, dimensions) //overlay the seed with searchArray to move the search neuron
+            val searchAddress = getLinear(dimensionalAddress) + getLinear(searchArray) //overlay the seed with searchArray to move the search neuron
             if (searchAddress<0 || searchAddress>numberOfNeurons-1) {
                 continue //check for extraneous searches :P fencepost issue on numberOfNeurons
             }
@@ -337,5 +337,3 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
         }
     } //the same as generateNeuronPluralityProbability without the randomness
 }
-
-fun main(){}

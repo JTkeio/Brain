@@ -11,13 +11,13 @@ import kotlin.random.Random
     //The main is at the bottom again <3
 
 fun imageTest(image: BufferedImage, searchGranularity: Int, percentageInformation: Double, outputFolder: String = "") {
-    val imageBrain = Brain(arrayOf(image.width, image.height), arrayOf(256,256,256))
+    val imageBrain = Brain(arrayOf(image.width, image.height), arrayOf(256, 256, 256))
     imageBrain.searchAlgorithm = {da, sg -> imageBrain.generateNeuronProximityPluralityProbability(da, sg)} //choose which algorithm Brain uses
 
 
     //Insert Information
     for (a in 0 until (imageBrain.numberOfNeurons*percentageInformation).toInt()) {
-        val tempAddress = imageBrain.getDimensional(Random.nextInt(0, imageBrain.numberOfNeurons), imageBrain.dimensions)
+        val tempAddress = imageBrain.getDimensional(Random.nextInt(0, imageBrain.numberOfNeurons))
         val tempColor = Color(image.getRGB(tempAddress[0], tempAddress[1]))
         imageBrain.pushNeuron(tempAddress, arrayOf(tempColor.blue, tempColor.green, tempColor.red))
     } //puts in the correct information at random points. The amount of random (but correct!) information is determined by percentageInformation
@@ -41,12 +41,12 @@ fun imageTest(image: BufferedImage, searchGranularity: Int, percentageInformatio
 
     //Guess Remaining Information
     for (b in 0 until imageBrain.numberOfNeurons*4) {
-        val tempAddress = imageBrain.getDimensional(Random.nextInt(0, imageBrain.numberOfNeurons), imageBrain.dimensions)
+        val tempAddress = imageBrain.getDimensional(Random.nextInt(0, imageBrain.numberOfNeurons))
         imageBrain.pullNeuron(tempAddress, searchGranularity)
     } //guess color values at randomly ordered pixels using searchAlgorithm
 
     for (c in 0 until imageBrain.numberOfNeurons) {
-        val tempAddress = imageBrain.getDimensional(c, imageBrain.dimensions)
+        val tempAddress = imageBrain.getDimensional(c)
         imageBrain.pullNeuron(tempAddress, searchGranularity)
     } //clean-up run that guarantees no pixel leaves empty
 

@@ -25,7 +25,7 @@ fun geometryTest(geometricEquation: (searchAddress: Array<Int>) -> Boolean, dime
 
 
     val geometryBrain = Brain(dimensions, arrayOf(2)) //don't change the arrayOf(2) :p it limits the outputs to 0 and 1 (the 2 represents the 2 values)
-    geometryBrain.searchAlgorithm = {da:Array<Int>, sg:Int -> geometryBrain.generateNeuronProximityAverageAbsolute(da,sg)} //Specify which algorithm to use. Choose one from Brain, below, or write one yourself.
+    geometryBrain.searchAlgorithm = {da:Array<Int>, sg:Int -> geometryBrain.generateNeuronProximityAverageProbability(da,sg)} //Specify which algorithm to use. Choose one from Brain, below, or write one yourself.
     //generateNeuronProximityAverageProbability(da, sg)
     //generateNeuronProximityAverageAbsolute(da, sg)
     //generateNeuronProximityPluralityProbability(da, sg)
@@ -34,7 +34,7 @@ fun geometryTest(geometricEquation: (searchAddress: Array<Int>) -> Boolean, dime
 
     //Insert Information
     for (i in 0 until (geometryBrain.numberOfNeurons*percentageInformation).toInt()) {
-        val tempAddress = geometryBrain.getDimensional(Random.nextInt(0, geometryBrain.numberOfNeurons), geometryBrain.dimensions)
+        val tempAddress = geometryBrain.getDimensional(Random.nextInt(0, geometryBrain.numberOfNeurons))
         geometryBrain.pushNeuron(tempAddress, if (geometricEquation(tempAddress)) (arrayOf(1)) else (arrayOf(0)))
     } //puts in the correct information at random points. The amount of random (but correct!) information is determined by percentageInformation
 
@@ -43,12 +43,12 @@ fun geometryTest(geometricEquation: (searchAddress: Array<Int>) -> Boolean, dime
 
     //Guess Remaining Information
     for (j in 0 until geometryBrain.numberOfNeurons*10) {
-        val tempAddress = geometryBrain.getDimensional(Random.nextInt(0, geometryBrain.numberOfNeurons), geometryBrain.dimensions)
+        val tempAddress = geometryBrain.getDimensional(Random.nextInt(0, geometryBrain.numberOfNeurons))
         geometryBrain.pullNeuron(tempAddress, searchGranularity)
     } //arbitrarily looks at random points and guesses what should go there. Change the algorithm at   geometryBrain.searchAlgorithm
 
     for (k in 0 until geometryBrain.numberOfNeurons) {
-        val tempAddress = geometryBrain.getDimensional(k, geometryBrain.dimensions)
+        val tempAddress = geometryBrain.getDimensional(k)
         geometryBrain.pullNeuron(tempAddress, searchGranularity)
     } //go through all remaining neurons and guess (pullNeuron() does nothing if the neuron in question is already full so there is no negative to running back through all neurons)
 
@@ -58,7 +58,7 @@ fun geometryTest(geometricEquation: (searchAddress: Array<Int>) -> Boolean, dime
     //Determine Accuracy of Information
     var accuracy = 0
     for (l in 0 until geometryBrain.numberOfNeurons) {
-        val searchAddress = geometryBrain.getDimensional(l, geometryBrain.dimensions)
+        val searchAddress = geometryBrain.getDimensional(l)
         if ((geometryBrain.pullNeuron(searchAddress,0)[0] == if (geometricEquation(searchAddress)) (1) else (0))) {
             accuracy += 1
         }
