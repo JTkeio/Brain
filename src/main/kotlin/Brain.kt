@@ -5,7 +5,7 @@ import kotlin.math.roundToInt
 import kotlin.random.Random
 
 //each entry in dimensions is a new input channel, the value represents each channel's possible values 0-n
-//each entry in ranges is a new output channel, the value represents each channel's possible values 0-n
+//each entry in ranges is a new output channel, the value represents each channel's possible values 0 to n-1
 
 class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
     val numberOfNeurons = multiplyArray(dimensions)
@@ -23,7 +23,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
     return initial
 } //multiplies every integer in an array, converts an any-dimensional size into its one-dimensional size
 
-    fun getLinear(dimensionalAddress: Array<Int>, tempDimensions: Array<Int>): Int {
+    fun getLinear(dimensionalAddress: Array<Int>, tempDimensions: Array<Int> = dimensions): Int {
         if (dimensionalAddress.size != tempDimensions.size) {
             println("Invalid dimensional address")
             return -1
@@ -38,7 +38,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
         return linearAddress
     } //converts any multi-dimensional coordinate into an equivalent one-dimensional coordinate
 
-    fun getDimensional(linearAddress: Int, tempDimensions: Array<Int>): Array<Int> {
+    fun getDimensional(linearAddress: Int, tempDimensions: Array<Int> = dimensions): Array<Int> {
         var tempNumberOfNeurons = multiplyArray(tempDimensions)
 
         if (linearAddress > tempNumberOfNeurons || linearAddress < 0) {
@@ -145,7 +145,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
 
         if (values.size == ranges.size) {
             for (g in values.indices) {
-                if (values[g] > ranges[g]) {
+                if (values[g] > ranges[g]-1) { //fencepost issue
                     println("Extraneous proposed values when pushing a neuron")
                     return -1
                 }
@@ -185,7 +185,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
     fun generateNeuronRandom(): Array<Int> {
         val newNeuron = Array(ranges.size){0}
         for (h in ranges.indices) {
-            newNeuron[h] = Random.nextInt(0,ranges[h]+1) //fencepost issue
+            newNeuron[h] = Random.nextInt(0, ranges[h])
         }
         return newNeuron
     } //generates a random return value for the given neuron
@@ -272,7 +272,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
     fun generateNeuronProximityPluralityProbability(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
         if (searchGranularity < 1) { return generateNeuronRandom() }
         val neuronTypes = Array(2){0}
-        var valueMap = Array<Int>(multiplyArray(ranges.map{x -> x+1}.toTypedArray())){0} //fencepost issue on size
+        var valueMap = Array<Int>(multiplyArray(ranges)){0} //fencepost issue on size
         val bubbleArray = Array(dimensions.size){(2*searchGranularity)+1} //bubble refers to the shape :) this defines the size and dimensions of the search bubble
 
         for (k in 0 until multiplyArray(bubbleArray)) {
@@ -306,7 +306,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
     fun generateNeuronProximityPluralityAbsolute(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
         if (searchGranularity < 1) { return generateNeuronRandom() }
         val neuronTypes = Array(2){0}
-        var valueMap = Array<Int>(multiplyArray(ranges.map{x -> x+1}.toTypedArray())){0} //fencepost issue on size
+        var valueMap = Array<Int>(multiplyArray(ranges)){0} //fencepost issue on size
         val bubbleArray = Array(dimensions.size){(2*searchGranularity)+1} //bubble refers to the shape :) this defines the size and dimensions of the search bubble
 
         for (k in 0 until multiplyArray(bubbleArray)) {

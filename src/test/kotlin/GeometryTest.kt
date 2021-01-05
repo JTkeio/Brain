@@ -24,7 +24,7 @@ fun geometryTest(geometricEquation: (searchAddress: Array<Int>) -> Boolean, dime
     //geometryTest() returns its accuracy
 
 
-    val geometryBrain = Brain(dimensions, arrayOf(1)) //don't change the arrayOf(1) :p it limits the outputs to 0 and 1, like we want
+    val geometryBrain = Brain(dimensions, arrayOf(2)) //don't change the arrayOf(2) :p it limits the outputs to 0 and 1 (the 2 represents the 2 values)
     geometryBrain.searchAlgorithm = {da:Array<Int>, sg:Int -> geometryBrain.generateNeuronProximityAverageAbsolute(da,sg)} //Specify which algorithm to use. Choose one from Brain, below, or write one yourself.
     //generateNeuronProximityAverageProbability(da, sg)
     //generateNeuronProximityAverageAbsolute(da, sg)
