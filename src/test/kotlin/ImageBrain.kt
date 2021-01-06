@@ -12,7 +12,7 @@ import kotlin.random.Random
 
 fun imageTest(image: BufferedImage, searchGranularity: Int, percentageInformation: Double, outputFolder: String = "") {
     val imageBrain = Brain(arrayOf(image.width, image.height), arrayOf(256, 256, 256))
-    imageBrain.searchAlgorithm = {da, sg -> imageBrain.generateNeuronProximityPluralityProbability(da, sg)} //choose which algorithm Brain uses
+    imageBrain.searchAlgorithm = {da, sg -> imageBrain.generateNeuronProximityAverageProbability(da, sg)} //choose which algorithm Brain uses
 
 
     //Insert Information
@@ -27,7 +27,7 @@ fun imageTest(image: BufferedImage, searchGranularity: Int, percentageInformatio
 
         for (p in 0 until image.height) {
             for (o in 0 until image.width) {
-                var outputColor = imageBrain.pullNeuron(arrayOf(o, p), 0)
+                var outputColor = imageBrain.pullNeuron(arrayOf(o, p), -1)
                 if (outputColor[0]<0) {
                     outputColor = Array(imageBrain.ranges.size){0}
                 }
@@ -40,7 +40,7 @@ fun imageTest(image: BufferedImage, searchGranularity: Int, percentageInformatio
 
 
     //Guess Remaining Information
-    for (b in 0 until imageBrain.numberOfNeurons*4) {
+    for (b in 0 until imageBrain.numberOfNeurons*3) {
         val tempAddress = imageBrain.getDimensional(Random.nextInt(0, imageBrain.numberOfNeurons))
         imageBrain.pullNeuron(tempAddress, searchGranularity)
     } //guess color values at randomly ordered pixels using searchAlgorithm
@@ -55,7 +55,7 @@ fun imageTest(image: BufferedImage, searchGranularity: Int, percentageInformatio
 
         for (l in 0 until image.height) {
             for (k in 0 until image.width) {
-                var outputColor = imageBrain.pullNeuron(arrayOf(k, l), 0)
+                var outputColor = imageBrain.pullNeuron(arrayOf(k, l), -1)
                 if (outputColor[0]<0) {outputColor = Array(imageBrain.ranges.size){0}}
                 outputImage.setRGB(k, l, Color(outputColor[2], outputColor[1], outputColor[0]).rgb)
             }
@@ -69,7 +69,7 @@ fun imageTest(image: BufferedImage, searchGranularity: Int, percentageInformatio
 
 
 fun main() {
-    val input = File("C:/Users/Jacob Tkeio/Desktop/Programs/Kotlin Projects/athenian.jpg")
+    val input = File("C:/Users/Jacob Tkeio/Desktop/bruh.jpg")
     val image = ImageIO.read(input)
-    imageTest(image, 10, .01, "C:/Users/Jacob Tkeio/Desktop")
+    imageTest(image, 7, .01, "C:/Users/Jacob Tkeio/Desktop")
 }
