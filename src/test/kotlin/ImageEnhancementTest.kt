@@ -12,7 +12,8 @@ import kotlin.random.Random
 
 fun imageTest(image: BufferedImage, searchGranularity: Int, percentageInformation: Double, outputFolder: String = "") {
     val imageBrain = Brain(arrayOf(image.width, image.height), arrayOf(256, 256, 256))
-    imageBrain.searchAlgorithm = {da, sg -> imageBrain.generateNeuronProximityAverageProbability(da, sg)} //choose which algorithm Brain uses
+    imageBrain.searchAlgorithm = {da, sg -> imageBrain.generateNeuronProximityAverageAbsolute(da, sg)} //choose which algorithm imageBrain uses
+    val startTime = System.currentTimeMillis() //This is a calculation-heavy program, let's time it
 
 
     //Insert Information
@@ -20,6 +21,7 @@ fun imageTest(image: BufferedImage, searchGranularity: Int, percentageInformatio
         val tempAddress = imageBrain.getDimensional(Random.nextInt(0, imageBrain.numberOfNeurons))
         val tempColor = Color(image.getRGB(tempAddress[0], tempAddress[1]))
         imageBrain.pushNeuron(tempAddress, arrayOf(tempColor.blue, tempColor.green, tempColor.red))
+        println("inserted $a")
     } //puts in the correct information at random points. The amount of random (but correct!) information is determined by percentageInformation
 
     if (outputFolder.isNotEmpty()) {
@@ -35,6 +37,7 @@ fun imageTest(image: BufferedImage, searchGranularity: Int, percentageInformatio
             }
         }
         ImageIO.write(outputImage, "jpg", File("$outputFolder/ImageBrain_Data.jpg"))
+        println("base image sent")
     } //output the information that was inserted randomly
 
 
@@ -43,11 +46,13 @@ fun imageTest(image: BufferedImage, searchGranularity: Int, percentageInformatio
     for (b in 0 until imageBrain.numberOfNeurons*3) {
         val tempAddress = imageBrain.getDimensional(Random.nextInt(0, imageBrain.numberOfNeurons))
         imageBrain.pullNeuron(tempAddress, searchGranularity)
+        println("guessed $b")
     } //guess color values at randomly ordered pixels using searchAlgorithm
 
     for (c in 0 until imageBrain.numberOfNeurons) {
         val tempAddress = imageBrain.getDimensional(c)
         imageBrain.pullNeuron(tempAddress, searchGranularity)
+        println("filled $c")
     } //clean-up run that guarantees no pixel leaves empty
 
     if (outputFolder.isNotEmpty()) {
@@ -60,8 +65,12 @@ fun imageTest(image: BufferedImage, searchGranularity: Int, percentageInformatio
                 outputImage.setRGB(k, l, Color(outputColor[2], outputColor[1], outputColor[0]).rgb)
             }
         }
-        ImageIO.write(outputImage, "jpg", File("$outputFolder/ImageBrain_Output.jpg"))
+        ImageIO.write(outputImage, "bmp", File("$outputFolder/ImageBrain_Output.bmp"))
+        println("final image sent")
     } //output the final image
+
+    val runTime = (startTime - System.currentTimeMillis())/1000 //total seconds, converted from milliseconds, that this function took to run
+    println("Enhancement of image took $runTime seconds")
 }
 
 
@@ -71,5 +80,5 @@ fun imageTest(image: BufferedImage, searchGranularity: Int, percentageInformatio
 fun main() {
     val input = File("C:/Users/Jacob Tkeio/Desktop/bread.jpg")
     val image = ImageIO.read(input)
-    imageTest(image, 16, .001, "C:/Users/Jacob Tkeio/Desktop")
+    imageTest(image, 10, .001, "C:/Users/Jacob Tkeio/Desktop")
 }
