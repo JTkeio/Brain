@@ -69,7 +69,7 @@ fun imageTest(image: BufferedImage, searchGranularity: Int, percentageInformatio
 
 
 fun main() {
-    val input = File("C:/Users/Jacob Tkeio/Desktop/bruh.jpg")
+    val input = File("C:/Users/Jacob Tkeio/Desktop/bread.jpg")
     val image = ImageIO.read(input)
-    imageTest(image, 7, .01, "C:/Users/Jacob Tkeio/Desktop")
+    imageTest(image, 16, .001, "C:/Users/Jacob Tkeio/Desktop")
 }
