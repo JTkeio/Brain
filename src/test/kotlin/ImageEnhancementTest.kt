@@ -78,7 +78,7 @@ fun imageEnhancementTest(image: BufferedImage, searchGranularity: Int, percentag
 
 
 fun main() {
-    val input = File("C:/Users/Jacob Tkeio/Desktop/bridge.jpg")
+    val input = File("C:/Users/Jacob Tkeio/Desktop/hum.jpg")
     val image = ImageIO.read(input)
-    imageEnhancementTest(image, 5, .2, "C:/Users/Jacob Tkeio/Desktop")
+    imageEnhancementTest(image, 6, .1, "C:/Users/Jacob Tkeio/Desktop")
 }

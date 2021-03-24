@@ -227,7 +227,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
         } else {
             return generateNeuronRandom() //there weren't many good neurons around this one, make a random one to test
         }
-    } //my original algorithm for generating neurons based on previous information by creating an average of all seen neurons
+    } //my original algorithm for generating neurons based on previous information by creating an average of all seen neurons (or having a chance of returning a random neuron if there wasn't enough data)
 
     fun generateNeuronProximityAverageAbsolute(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
         if (searchGranularity < 1) { return generateNeuronRandom() }
@@ -267,7 +267,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
         } else {
             return generateNeuronRandom() //there weren't many good neurons around this one, make a random one to test
         }
-    } //the same as generateNeuronProximityAverageRandom without the randomness
+    } //the same as generateNeuronProximityAverageRandom (without the chance in choosing if there was enough data or not)
 
     fun generateNeuronProximityPluralityProbability(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
         if (searchGranularity < 1) { return generateNeuronRandom() }
@@ -302,7 +302,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
         } else {
             return generateNeuronRandom() //there weren't many good neurons around this one, make a random one to test
         }
-    } //generateNeuronProximityPlurality returns the most-seen neuron around it instead of making a new one as an average
+    } //generateNeuronProximityPlurality returns the most-seen neuron around it instead of making a new neuron as an average (or has a chance of returning a random neuron if there wasn't enough data)
 
     fun generateNeuronProximityPluralityAbsolute(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
         if (searchGranularity < 1) { return generateNeuronRandom() }
@@ -336,5 +336,5 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
         } else {
             return generateNeuronRandom() //there weren't many good neurons around this one, make a random one to test
         }
-    } //the same as generateNeuronPluralityProbability without the randomness
+    } //the same as generateNeuronPluralityProbability (without the chance in choosing if there was enough data or not)
 }
