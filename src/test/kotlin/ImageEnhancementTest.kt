@@ -10,9 +10,9 @@ import kotlin.random.Random
     //This is just a more involved version of GeometryTest, and I would look there to start
     //The main is at the bottom again <3
 
-fun imageTest(image: BufferedImage, searchGranularity: Int, percentageInformation: Double, outputFolder: String = "") {
+fun imageEnhancementTest(image: BufferedImage, searchGranularity: Int, percentageInformation: Double, outputFolder: String = "") {
     val imageBrain = Brain(arrayOf(image.width, image.height), arrayOf(256, 256, 256))
-    imageBrain.searchAlgorithm = {da, sg -> imageBrain.generateNeuronProximityAverageAbsolute(da, sg)} //choose which algorithm imageBrain uses
+    imageBrain.searchAlgorithm = {da, sg -> imageBrain.generateNeuronProximityPluralityProbability(da, sg)} //choose which algorithm imageBrain uses
     val startTime = System.currentTimeMillis() //This is a calculation-heavy program, let's time it
 
 
@@ -65,11 +65,11 @@ fun imageTest(image: BufferedImage, searchGranularity: Int, percentageInformatio
                 outputImage.setRGB(k, l, Color(outputColor[2], outputColor[1], outputColor[0]).rgb)
             }
         }
-        ImageIO.write(outputImage, "bmp", File("$outputFolder/ImageBrain_Output.bmp"))
+        ImageIO.write(outputImage, "jpg", File("$outputFolder/ImageBrain_Output.jpg"))
         println("final image sent")
     } //output the final image
 
-    val runTime = (startTime - System.currentTimeMillis())/1000 //total seconds, converted from milliseconds, that this function took to run
+    val runTime = (System.currentTimeMillis()-startTime)/1000 //total seconds, converted from milliseconds, that this function took to run
     println("Enhancement of image took $runTime seconds")
 }
 
@@ -78,7 +78,7 @@ fun imageTest(image: BufferedImage, searchGranularity: Int, percentageInformatio
 
 
 fun main() {
-    val input = File("C:/Users/Jacob Tkeio/Desktop/bread.jpg")
+    val input = File("C:/Users/Jacob Tkeio/Desktop/bridge.jpg")
     val image = ImageIO.read(input)
-    imageTest(image, 10, .001, "C:/Users/Jacob Tkeio/Desktop")
+    imageEnhancementTest(image, 5, .2, "C:/Users/Jacob Tkeio/Desktop")
 }

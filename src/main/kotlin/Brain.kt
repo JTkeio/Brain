@@ -272,7 +272,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
     fun generateNeuronProximityPluralityProbability(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
         if (searchGranularity < 1) { return generateNeuronRandom() }
         val neuronTypes = Array(2){0}
-        var valueMap = Array<Int>(multiplyArray(ranges)){0} //fencepost issue on size
+        val valueMap: MutableMap<Array<Int>, Int> = mutableMapOf() //valueMap will hold a count of each type of neuron under the Array<Int> matching the dimensionalAddress passed in
         val bubbleArray = Array(dimensions.size){(2*searchGranularity)+1} //bubble refers to the shape :) this defines the size and dimensions of the search bubble
 
         for (k in 0 until multiplyArray(bubbleArray)) {
@@ -291,13 +291,14 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
                 neuronTypes[0]+=1 //this neuron is empty
             } else {
                 neuronTypes[1]+=1 //this neuron is full
-                valueMap[getLinear(searchNeuron, ranges)] += 1 //add the neuron to valueMap
+                valueMap.put(searchNeuron, valueMap.getOrDefault(searchNeuron, 0) + 1) //create or grab and increment the value for the given neuron
+                 //add the neuron to valueMap
             }
         }
         neuronTypes[0]-=1 //remove the seed (dimensionalAddress), which is always an Int (-1), from the tally
 
         if (Random.nextDouble(0.0, neuronTypes.sum().toDouble()) > neuronTypes[0]/neuronTypes.sum().toDouble()) { //a bit of randomness based on the % good/bad neurons gathered
-            return getDimensional(valueMap.indexOf(valueMap.max()), ranges) //this was the most-seen neuron, return it
+            return (valueMap.maxByOrNull{it.value} ?: return generateNeuronRandom()).key //this was the most-seen neuron, return it (or return a random one if no neuron was seen)
         } else {
             return generateNeuronRandom() //there weren't many good neurons around this one, make a random one to test
         }
@@ -306,7 +307,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
     fun generateNeuronProximityPluralityAbsolute(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
         if (searchGranularity < 1) { return generateNeuronRandom() }
         val neuronTypes = Array(2){0}
-        var valueMap = Array<Int>(multiplyArray(ranges)){0} //fencepost issue on size
+        val valueMap: MutableMap<Array<Int>, Int> = mutableMapOf() //valueMap will hold a count of each type of neuron under the Array<Int> matching the dimensionalAddress passed in
         val bubbleArray = Array(dimensions.size){(2*searchGranularity)+1} //bubble refers to the shape :) this defines the size and dimensions of the search bubble
 
         for (k in 0 until multiplyArray(bubbleArray)) {
@@ -325,13 +326,13 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
                 neuronTypes[0]+=1 //this neuron is empty
             } else {
                 neuronTypes[1]+=1 //this neuron is full
-                valueMap[getLinear(searchNeuron, ranges)] += 1 //add the neuron to valueMap
+                valueMap.put(searchNeuron, valueMap.getOrDefault(searchNeuron, 0) + 1) //create or grab and increment the value for the given neuron
             }
         }
         neuronTypes[0]-=1 //remove the seed (dimensionalAddress), which is always an Int (-1), from the tally
 
         if (neuronTypes[1]>=neuronTypes[0]) { //removed probability, an equal amount of full and empty neurons defers to the full ones
-            return getDimensional(valueMap.indexOf(valueMap.max()), ranges) //this was the most-seen neuron, return it
+            return (valueMap.maxByOrNull{it.value} ?: return generateNeuronRandom()).key //this was the most-seen neuron, return it (or return a random one if no neuron was seen)
         } else {
             return generateNeuronRandom() //there weren't many good neurons around this one, make a random one to test
         }
