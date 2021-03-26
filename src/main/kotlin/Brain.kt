@@ -10,7 +10,7 @@ import kotlin.random.Random
 class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
     val numberOfNeurons = multiplyArray(dimensions)
     val brain = Array(numberOfNeurons){Array(ranges.size){-1}} //initialize brain with arrays fitting the constraints from ranges but filled with -1 to signify emptiness
-    var searchAlgorithm = {dimensionalAddress:Array<Int>, searchGranularity:Int -> generateNeuronProximityAverageAbsolute(dimensionalAddress,searchGranularity)} //define default search algorithm
+    var searchAlgorithm = {dimensionalAddress:Array<Int>, searchGranularity:Int -> generateNeuronProximityAverage(dimensionalAddress,searchGranularity)} //define default search algorithm
     //please do write your own algorithms! just reassign this variable under your instance of Brain
 
 
@@ -269,6 +269,46 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
         }
     } //the same as generateNeuronProximityAverageRandom (without the chance in choosing if there was enough data or not)
 
+    fun generateNeuronProximityAverage(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
+        if (searchGranularity < 1) { return generateNeuronRandom() }
+        val neuronTypes = Array(2){0}
+        val amalgamNeuron = Array(ranges.size){0}
+        val bubbleArray = Array(dimensions.size){(2*searchGranularity)+1} //bubble refers to the shape :) this defines the size and dimensions of the search bubble
+
+        for (k in 0 until multiplyArray(bubbleArray)) {
+            val searchArray = getDimensional(k, bubbleArray) //searchArray is constructed with coordinates for each point as defined by bubbleArray
+
+            for (r in searchArray.indices) {
+                searchArray[r]-=searchGranularity //the coordinates need to be shifted so they are centered on the seed
+            }
+
+            val searchAddress = getLinear(dimensionalAddress) + getLinear(searchArray) //overlay the seed with searchArray to move the search neuron
+            if (searchAddress<0 || searchAddress>numberOfNeurons-1) {
+                continue //check for extraneous searches :P fencepost issue on numberOfNeurons
+            }
+
+            val searchNeuron = brain[searchAddress]
+            if (searchNeuron[0]<0) {
+                neuronTypes[0]+=1 //this neuron is empty
+            } else {
+                neuronTypes[1]+=1 //this neuron is full
+                for (l in searchNeuron.indices) {
+                    amalgamNeuron[l] += searchNeuron[l] //add the full neuron to amalgam so it can be averaged later
+                }
+            }
+        }
+        neuronTypes[0]-=1 //remove the seed (dimensionalAddress), which is always an Int, from the tally
+
+        if (neuronTypes[1]!=0) {
+            for (p in amalgamNeuron.indices) {
+                amalgamNeuron[p] = (amalgamNeuron[p].toDouble() / if (neuronTypes[1] != 0) (neuronTypes[1]) else (1)).roundToInt() //amalgam neuron is just a summation so far, but it should be an average. DO NOT divide by 0
+            }
+            return amalgamNeuron //complete average of all neurons found, no extra steps
+        } else {
+            return generateNeuronRandom() //unless there were no neurons found, then return a randomly generated neuron
+        }
+    } //the same as generateNeuronProximityAverageAbsolute (without any random neurons at all, just the average)
+
     fun generateNeuronProximityPluralityProbability(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
         if (searchGranularity < 1) { return generateNeuronRandom() }
         val neuronTypes = Array(2){0}
@@ -337,4 +377,34 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
             return generateNeuronRandom() //there weren't many good neurons around this one, make a random one to test
         }
     } //the same as generateNeuronPluralityProbability (without the chance in choosing if there was enough data or not)
+
+    fun generateNeuronProximityPlurality(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
+        if (searchGranularity < 1) { return generateNeuronRandom() }
+        val neuronTypes = Array(2){0}
+        val valueMap: MutableMap<Array<Int>, Int> = mutableMapOf() //valueMap will hold a count of each type of neuron under the Array<Int> matching the dimensionalAddress passed in
+        val bubbleArray = Array(dimensions.size){(2*searchGranularity)+1} //bubble refers to the shape :) this defines the size and dimensions of the search bubble
+
+        for (k in 0 until multiplyArray(bubbleArray)) {
+            val searchArray = getDimensional(k, bubbleArray) //searchArray is constructed with coordinates for each point as defined by bubbleArray
+            for (r in searchArray.indices) {
+                searchArray[r]-=searchGranularity //the coordinates need to be shifted so they are centered on the seed
+            }
+
+            val searchAddress = getLinear(dimensionalAddress) + getLinear(searchArray) //overlay the seed with searchArray to move the search neuron
+            if (searchAddress<0 || searchAddress>numberOfNeurons-1) {
+                continue //check for extraneous searches :P fencepost issue on numberOfNeurons
+            }
+
+            val searchNeuron = brain[searchAddress]
+            if (searchNeuron[0]<0) {
+                neuronTypes[0]+=1 //this neuron is empty
+            } else {
+                neuronTypes[1]+=1 //this neuron is full
+                valueMap.put(searchNeuron, valueMap.getOrDefault(searchNeuron, 0) + 1) //create or grab and increment the value for the given neuron
+            }
+        }
+        neuronTypes[0]-=1 //remove the seed (dimensionalAddress), which is always an Int (-1), from the tally
+
+        return (valueMap.maxByOrNull{it.value} ?: return generateNeuronRandom()).key //complete plurality of all neurons found, no extra steps (unless there was no plurality, then return a randomly generated neuron)
+    }
 }
