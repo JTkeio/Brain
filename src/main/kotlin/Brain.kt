@@ -1,8 +1,11 @@
 package jtkeio.brain
 
+import java.awt.Color
 import java.io.File
+import javax.imageio.ImageIO
 import kotlin.math.roundToInt
 import kotlin.random.Random
+import java.awt.image.BufferedImage
 
 //each entry in dimensions is a new input channel, the value represents each channel's possible values 0-n
 //each entry in ranges is a new output channel, the value represents each channel's possible values 0 to n-1
@@ -93,7 +96,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
         }
     } //"displays" the brain.
 
-    fun printBinaryImage(){
+    fun printBinary(){
         for (u in 0 until numberOfNeurons) {
             val tempNeuron = brain[u]
             if (tempNeuron[0]<0) {print("   ")} else {
@@ -104,6 +107,32 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
             for (q in 0 until getSpaces(u)) {println()}
         }
     } //also "displays" the brain, but only when there is only one value in ranges. 0 is empty and anything greater (ideally 1) is a #
+
+    fun printImage(address: String){
+        if (address.contains(".") && dimensions.size>=2 && ranges.size>=3) { //there must be an address, brain must be at least 2D (like an image), and ranges must have at least 3 values (RGB)
+            val outputFile = File(address)
+            val outputImage = BufferedImage(dimensions[0], dimensions[1], 1) //1 means RGB colorspace
+
+            for (l in 0 until dimensions[1]) {
+                for (k in 0 until dimensions[0]) {
+                    var outputColor = pullNeuron(arrayOf(k, l), -1) //pulling data directly from every x,y coordinate in brain
+                    if (outputColor[0] < 0) {outputColor = Array(ranges.size){0}} //outputs black if there is no data (0,0,0)
+
+                    outputImage.setRGB(k, l, Color(outputColor[0], outputColor[1], outputColor[2]).rgb) //puts RGB at x,y in outputImage
+                }
+            }
+
+            ImageIO.write(outputImage, address.split(".")[1], outputFile)
+
+        } else {
+            print("printImage failed: ")
+            when {
+                !address.contains(".") -> println("the address must contain file type information in the form of a file type extension, like .jpg")
+                dimensions.size<2 -> println("there must be at least two dimensions in order to construct an image")
+                ranges.size<3 -> println("there must be at least three value ranges in order to pull RGB data to construct an image")
+            }
+        }
+    } //also "displays" the brain, but only when there are three values in ranges and the brain is two dimensonal. 0,0,0 is black and 255,255,255 is white
 
     fun store(address: String) {
         val file = File(address)

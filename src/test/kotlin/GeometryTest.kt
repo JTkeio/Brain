@@ -1,8 +1,6 @@
 package jtkeio.brain
 
-import kotlin.math.absoluteValue
 import kotlin.math.pow
-import kotlin.math.sin
 import kotlin.random.Random
 
 // NOTE from brainboy:
@@ -52,7 +50,7 @@ fun geometryTest(geometricEquation: (searchAddress: Array<Int>) -> Boolean, dime
         geometryBrain.pullNeuron(tempAddress, searchGranularity)
     } //go through all remaining neurons and guess (pullNeuron() does nothing if the neuron in question is already full so there is no negative to running back through all neurons)
 
-    if (doPrint) {geometryBrain.printBinaryImage()} //print all of the brain, including what we just constructed
+    if (doPrint) {geometryBrain.printBinary()} //print all of the brain, including what we just constructed
 
 
     //Determine Accuracy of Information
