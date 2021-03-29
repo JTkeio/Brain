@@ -188,7 +188,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
 
     fun pullNeuron(dimensionalAddress: Array<Int>, searchGranularity: Int): Array<Int> {
         if (dimensionalAddress.size != dimensions.size) {
-            print("Invalid dimensional address when pulling a neuron")
+            print("invalid dimensional address when pulling a neuron")
             return emptyArray()
         }
         val neuronIndex = getLinear(dimensionalAddress)
