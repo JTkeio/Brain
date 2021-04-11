@@ -19,7 +19,7 @@ import kotlin.random.Random
 
 fun imageEnhancementTest(image: BufferedImage, searchGranularity: Int, searchGranularityRamp: Int, percentageInformation: Double, outputFile: String = "") {
     val imageBrain = Brain(arrayOf(image.width, image.height), arrayOf(256, 256, 256))
-    imageBrain.searchAlgorithm = {da, sg -> imageBrain.generateNeuronProximityAverage(da, sg)} //choose which algorithm imageBrain uses
+    imageBrain.searchAlgorithm = {da, sg -> imageBrain.generateNeuronProximityPluralityProbability(da, sg)} //choose which algorithm imageBrain uses
     val startTime = System.currentTimeMillis() //This is a calculation-heavy program, let's time it
 
 
@@ -57,7 +57,7 @@ fun imageEnhancementTest(image: BufferedImage, searchGranularity: Int, searchGra
 
 
 fun main() {
-    val input = File("C:/Users/Jacob Tkeio/Desktop/fog.jpg")
+    val input = File("C:/Users/Jacob Tkeio/Desktop/nau.png")
     val image = ImageIO.read(input)
-    imageEnhancementTest(image, 10, 6, .1,"C:/Users/Jacob Tkeio/Desktop/imageBrain")
+    imageEnhancementTest(image, 5, 1, .1,"C:/Users/Jacob Tkeio/Desktop/imageBrain")
 }

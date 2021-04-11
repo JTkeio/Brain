@@ -1,6 +1,7 @@
 package jtkeio.brain
 
 import kotlin.math.pow
+import kotlin.math.sin
 import kotlin.random.Random
 
 // NOTE from brainboy:
@@ -36,7 +37,7 @@ fun geometryTest(geometricEquation: (searchAddress: Array<Int>) -> Boolean, dime
         geometryBrain.pushNeuron(tempAddress, if (geometricEquation(tempAddress)) (arrayOf(1)) else (arrayOf(0)))
     } //puts in the correct information at random points. The amount of random (but correct!) information is determined by percentageInformation
 
-    //if (doPrint) {geometryBrain.printBinaryImage()} //print the information that was inserted randomly
+    //if (doPrint) {geometryBrain.printBinary()} //print the information that was inserted randomly
 
 
     //Guess Remaining Information
@@ -87,7 +88,5 @@ fun main() {
     //val geometricEquation: (Array<Int>) -> Boolean = {searchAddress: Array<Int> -> (searchAddress[0]>2) and (searchAddress[0]<8) and (searchAddress[1]>2) and (searchAddress[1]<8) and (searchAddress[2]>2) and (searchAddress[2]<8)} //cube
 
 
-    for (q in 1..5) {
-        println(geometryTest(geometricEquation, arrayOf(100, 100), q*2, 0.01, true))
-    }
+    println(geometryTest(geometricEquation, arrayOf(100, 100), 7, 0.01, true))
 }

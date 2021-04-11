@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage
 //each entry in dimensions is a new input channel, the value represents each channel's possible values 0-n
 //each entry in ranges is a new output channel, the value represents each channel's possible values 0 to n-1
 
-class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
+class Brain(val dimensions: Array<Int>, val ranges: Array<Int>) {
     val numberOfNeurons = multiplyArray(dimensions)
     val brain = Array(numberOfNeurons){Array(ranges.size){-1}} //initialize brain with arrays fitting the constraints from ranges but filled with -1 to signify emptiness
     var searchAlgorithm = {dimensionalAddress:Array<Int>, searchGranularity:Int -> generateNeuronProximityAverage(dimensionalAddress,searchGranularity)} //define default search algorithm
