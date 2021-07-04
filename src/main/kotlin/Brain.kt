@@ -7,7 +7,7 @@ import kotlin.math.roundToInt
 import kotlin.random.Random
 import java.awt.image.BufferedImage
 
-//each entry in dimensions is a new input channel, the value represents each channel's possible values 0-n
+//each entry in dimensions is a new input channel, the value represents each channel's possible values 0 to n
 //each entry in ranges is a new output channel, the value represents each channel's possible values 0 to n-1
 
 class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
@@ -32,7 +32,7 @@ class Brain(var dimensions: Array<Int>, var ranges: Array<Int>) {
             return -1
         }
         var linearAddress = 0
-        var tempNumberOfNeurons= multiplyArray(tempDimensions)
+        var tempNumberOfNeurons = multiplyArray(tempDimensions)
 
         for (x in tempDimensions.indices) {
             tempNumberOfNeurons /= tempDimensions[x]
